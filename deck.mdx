@@ -2,95 +2,384 @@ import {
   CodeSurfer,
   CodeSurferColumns,
   Step,
-} from "code-surfer";
-import { github, vsDark } from "@code-surfer/themes";
+} from 'code-surfer';
 
-export const theme = vsDark;
+import { github } from '@code-surfer/themes';
+import darkTheme from './themes/dark';
 
-# Hello 👋
+import AnimatedDice from './components/AnimatedDice.jsx';
 
-You are using [MDX Deck](https://github.com/jxnblk/mdx-deck) and [Code Surfer](https://codesurfer.pomb.us)
+import ImageBlocksExample from './assets/blocks-example.png';
+import imageCreateApp from './assets/create-app.png';
+import imageCreateSlashCommand from './assets/create-slash-command.png';
+import imageFirebase from './assets/firebase-cloud-function.png';
+import imageSinglePlayer from './assets/single-player.png';
+import imageMultiPlayer from './assets/multi-player.png';
+import imageStats from './assets/stats.png';
+
+
+export const theme = darkTheme;
+const themeSecondary = github;
+
+# Interactive Slack App
+
+##### By **Ilyas**
+
+---
+
+
+## The problem
+
+- Too much noise in the squad channel.
+- Hard to tell which attempt it is.
+- Can be interrupted by other messages.
+- The available Slack apps don't solve the issue.
+
+---
+
+## The solution 🥁...
+
+---
+
+
+## Roll Dice
+
+<AnimatedDice />
+
+
+#### An interactive Slack app with multiplayer funtionality
+
+---
+
+## Let's get started 🤓
+
+---
+
+#### Slack app creation
+
+- Go to this url: https://api.slack.com/apps
+- Click "Create New App"
+- Give the app a name
+
+<Image size="contain" style="height: 400px" src={imageCreateApp} /> 
+
+---
+
+#### What can we do with Slack?
+##### Slack allows has 3 "surface" types
+
+---
+
+### Home tab
+
+<Image size="contain" style="height: 400px" src='https://a.slack-edge.com/6117c/img/api/surfaces/app_home_abstract.png' />
+
+>The Home tab is a persistent, yet dynamic interface for apps.
+Present each of your users with a unique Home tab just for them, always found in the exact same place.
+
+###### [Reference](https://api.slack.com/surfaces/tabs)
+
+---
+
+### Modals
+
+<Image size="contain" style="height: 400px" src='https://a.slack-edge.com/6117c/img/api/modals/modal-abstract.png' />
+
+>Modals provide focused spaces ideal for requesting and collecting data from users, or temporarily displaying dynamic and interactive information.
+For users, modals are prominent and pervasive — taking center stage in Slack ahead of any other interface element.
+
+###### [Reference](https://api.slack.com/surfaces/tabs)
+
+---
+
+### Messages
+
+<Image size="contain" style="height: 390px" src='https://a.slack-edge.com/984dc/img/api/surfaces/surfaces_messages.svg' />
+
+> Messages are one of the basic ingredients of Slack apps.
+Compose them, send them, retrieve them, update them, delete them.
+
+###### [Reference](https://api.slack.com/surfaces/tabs)
+
+---
+
+##### And the clear winner was obviously:
+
+### Messages 💬
+
+---
+
+##### Slack provides many components (called "Blocks") that we can use to create more than a plain text message
+ 
+<Image size="contain" style="height: 400px;" src="https://a.slack-edge.com/80588/img/api/messaging_landing_interactivity.png" />
+
+###### You can try some of them with their online [Block Kit Builder](https://api.slack.com/tools/block-kit-builder)
+
+
+---
+
+<Split>
+
+<CodeSurfer>
+
+```json
+{
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"text": "Select a date",
+				"type": "mrkdwn"
+			},
+			"accessory": {
+				"type": "datepicker"
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "image",
+					"image_url": "https://demo.com/cat.jpg",
+					"alt_text": "cute cat"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*Cat* has approved this message."
+				}
+			]
+		}
+	]
+}
+```
+
+</CodeSurfer>
+
+<Box style="background-color: white; height: 100vh; display: flex; justify-content: center; align-items: center">
+
+  <Image style="height: 300px" size="contain" src={ImageBlocksExample} />
+
+</Box>
+
+</Split>
+
+---
+
+#### Slash commands
+
+To trigger the dice roll, we will use the slash commands that most of you are familiar with.
+
+<Image style="height:400px" size="contain" src="https://slashgif.com/static/images/gifs/example.gif"/>
+
+---
+
+#### Slash command creation
+
+- Go to: https://api.slack.com/apps/{APP_ID}/slash-commands
+- Click "Create Slash Command"
+- Give your command a name and specify which endpoint Slack should call
+
+<Image size="contain" style="height: 350px" src={imageCreateSlashCommand} /> 
+
+---
+
+#### Let's make that endpoint 👩‍💻👨‍💻
+
+---
+
+##### Because the app is quite simple and we won't need a server that is awake all the time, I decided to go serverless (using Firebase Functions in the example)
+
+<Image height="150px" size="contain" src={imageFirebase} />
 
 ---
 
 <CodeSurfer>
 
-```js title="This is a title" subtitle="and this a subtitle"
-function lorem(ipsum, dolor = 1) {
-  const sit = ipsum == null ? 0 : ipsum.sit;
-  dolor = sit - amet(dolor);
-  return sit
-    ? consectetur(ipsum, 0, dolor < 0 ? 0 : dolor)
-    : [];
-}
+```js title="/index.js" subtitle="We add a simple request handler using Express.js"
+const functions = require('firebase-functions');
+const express = require('express');
 
-function incididunt(ipsum, ut = 1) {
-  ut = labore.et(amet(ut), 0);
-  const sit = ipsum == null ? 0 : ipsum.sit;
+const app = express();
 
-  if (!sit || ut < 1) {
-    return [];
-  }
+app.get('/api/ping', (request, response) => {
+  response.send('OK');
+});
 
-  let dolore = 0;
-  let magna = 0;
-  const aliqua = new eiusmod(labore.ut(sit / ut));
+exports.app = functions.https.onRequest(app);
+```
 
-  while (dolore < sit) {
-    aliqua[magna++] = consectetur(
-      ipsum,
-      dolore,
-      (dolore += ut)
-    );
-  }
+```js title="/index.js" subtitle="We register our routes"
+const functions = require('firebase-functions');
+const express = require('express');
+// Routes
+const slackRoutes = require('./routes/slack');
 
-  return aliqua;
-}
+const app = express();
+
+app.use('/api/slack', slackRoutes);
+
+app.get('/api/ping', (request, response) => {
+  response.send('OK');
+});
+
+exports.app = functions.https.onRequest(app);
+```
+
+</CodeSurfer>
+
+---
+
+<CodeSurfer>
+
+```js 1:2,3[8:10] title="/routes/slack.js" subtitle="We define our slash command endpoint"
+const express = require('express');
+const axios = require('axios');
+
+const router = express.Router();
+
+router.post('/roll-dice', (request, response) => {
+  const { body } = request;
+});
 ```
 
 ```js
-function lorem(ipsum, dolor = 1) {
-  const sit = ipsum == null ? 0 : ipsum.sit;
-  dolor = sit - amet(dolor);
-  return sit
-    ? consectetur(ipsum, 0, dolor < 0 ? 0 : dolor)
-    : [];
-}
+const express = require('express');
+const axios = require('axios');
 
-function adipiscing(...elit) {
-  if (!elit.sit) {
-    return [];
+const router = express.Router();
+
+router.post('/roll-dice', (request, response) => {
+  const { body } = request;
+
+  if (body.text && body.text.trim() === 'help') {
+    return response.json({
+      response_type: 'ephemeral',
+      text: 'Hi :) Try rolling the default dice using "/roll-dice". For a custom dice, try "/roll-dice 2d20".',
+    });
   }
-
-  const sed = elit[0];
-  return eiusmod.tempor(sed) ? sed : [sed];
-}
-
-function incididunt(ipsum, ut = 1) {
-  ut = labore.et(amet(ut), 0);
-  const sit = ipsum == null ? 0 : ipsum.sit;
-
-  if (!sit || ut < 1) {
-    return [];
-  }
-
-  let dolore = 0;
-  let magna = 0;
-  const aliqua = new eiusmod(labore.ut(sit / ut));
-
-  while (dolore < sit) {
-    aliqua[magna++] = consectetur(
-      ipsum,
-      dolore,
-      (dolore += ut)
-    );
-  }
-
-  return aliqua;
-}
+});
 ```
 
-```diff 1[10:14],2[15:19],3[22:27],10:12
+```js
+const express = require('express');
+const axios = require('axios');
+const { parseDice, roll } = require('../services/dice');
+
+const DEFAULT_DICE = { rolls: 1, sides: 6 };
+const router = express.Router();
+
+router.post('/roll-dice', (request, response) => {
+  const { body } = request;
+
+  if (body.text && body.text.trim() === 'help') {
+    return response.json({
+      response_type: 'ephemeral',
+      text: 'Hi :) Try rolling the default dice using "/roll-dice". For a custom dice try "/roll-dice 2d20".',
+    });
+  }
+
+  let { rolls, sides } = parseDice(body.text) || DEFAULT_DICE;
+
+  const rolledNumbers = roll({ sides, rolls });
+
+  response.json({
+    response_type: 'in_channel',
+    text: `You rolled a ${rolledNumbers}`,
+  });
+});
+```
+
+```js 23,29:58
+const express = require('express');
+const axios = require('axios');
+const { parseDice, roll } = require('../services/dice');
+const {
+  generateContextBlockId,
+  buildEntrySection,
+} = require('../services/helper');
+
+const DEFAULT_DICE = { rolls: 1, sides: 6 };
+const router = express.Router();
+
+router.post('/roll-dice', (request, response) => {
+  const { body } = request;
+
+  if (body.text && body.text.trim() === 'help') {
+    return response.json({
+      response_type: 'ephemeral',
+      text: 'Hi :) Try rolling the default dice using "/roll-dice". For a custom dice try "/roll-dice 2d20".',
+    });
+  }
+
+  // We send an immediate feedback to the user
+  response.status(200).send('');
+
+  let { rolls, sides } = parseDice(body.text) || DEFAULT_DICE;
+
+  const rolledNumbers = roll({ sides, rolls });
+
+  axios.post(body.response_url, {
+    response_type: 'in_channel',
+    delete_original: true,
+    blocks: [
+      buildEntrySection({ userId: body.user_id, rolledNumbers, sides }),
+      {
+        type: 'actions',
+        elements: [
+          {
+            type: 'button',
+            text: {
+              type: 'plain_text',
+              text: 'Roll',
+            },
+            value: ACTION_VALUE.ADD_ROLL,
+          }
+        ]
+      },
+      {
+        type: 'context',
+        block_id: generateContextBlockId({ sides, rolls }),
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: `*Mode:* ${rolls} ${sides}-sided dice${rolls === 1 ? '' : 's'} per attempt.`,
+          },
+        ],
+      },
+    ],
+  });
+});
+```
+
+```diff 29[14:31] subtitle="Slack provides us with an endpoint that we can call async."
+
+```
+
+```diff 30 subtitle="A message can be 'in_channel' or 'ephemeral'"
+
+```
+
+```diff 31 subtitle="We can decide if we want to delete the original message or keep it"
+
+```
+
+```diff 32:57 subtitle="'blocks' is an array of the slack UI blocks we want to show in the message"
+
+```
+
+```diff 33 subtitle="This is a custom helper that retuns the blocks needed to show a roll"
+
+```
+
+```diff 34:46 subtitle="The actionable blocks"
+
+```
+
+```diff 47:56 subtitle="The context blocks"
+
+```
+
+```diff 49 subtitle="I generate a special ID because I use it to save data about the session"
 
 ```
 
@@ -98,55 +387,209 @@ function incididunt(ipsum, ut = 1) {
 
 ---
 
-<CodeSurferColumns themes={[vsDark, github]}>
+<CodeSurfer>
 
-<Step>
+```js title="/services/helper.js"
 
-```js
-const magna = aliqua => aliqua.ut((enim, ad) => enim, 0);
-```
+function buildEntrySection({ userId, rolledNumbers, sides, attempt = 1 }) {
+  const styledNumbers = rolledNumbers
+    .map(number => styleNumber({ number, max: sides }));
 
-```js
-const minim = (ad, enim) => dolore.magna(ad / enim);
-```
-
-</Step>
-
-<Step>
-
-```js
-const lorem = (ipsum, dolor, sit) => {
-  const amet = dolor - ipsum;
-  return consectetur.adipiscing(
-    {
-      elit: sed.eiusmod(sit - dolor) / amet + 2,
+  const attemptLabel = attempt > 1 ? ` _(attempt: ${attempt})_` : '';
+  return {
+    type: 'section',
+    block_id: generateEntryBlockId({ userId, attempt }),
+    text: {
+      type: 'mrkdwn',
+      text: `<@${userId}> rolled ${styledNumbers.join(' | ')}${attemptLabel}`,
+      verbatim: true,
     },
-    (tempor, incididunt) => ipsum + amet * incididunt
-  );
-};
+  };
+}
 
-const magna = aliqua => aliqua.ut((enim, ad) => enim, 0);
 ```
 
-```js
-const minim = (ad, enim) => dolore.magna(ad / enim);
+```diff 4[20:54]
 
-const sed = (eiusmod, tempor, incididunt) => {
-  const ut = tempor - eiusmod;
-  return labore.et(
-    {
-      amet: dolore.magna(incididunt - tempor) / ut + 2,
-    },
-    (aliqua, elit) => eiusmod + ut * elit
-  );
-};
 ```
 
-</Step>
-
-</CodeSurferColumns>
+</CodeSurfer>
 
 ---
 
-docs:  
-[codesurfer.pomb.us](https://codesurfer.pomb.us)
+<CodeSurfer>
+
+```js
+
+const NUMBER_EMOJIS = ['0️⃣','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟'];
+
+function styleNumber({ number, max }) {
+  if (max < NUMBER_EMOJIS.length - 1) {
+    return NUMBER_EMOJIS[number];
+  }
+
+  return `*[${number}]*`;
+}
+
+```
+
+</CodeSurfer>
+
+---
+
+##### Great! Now we can see a message like this after running the Slash command:
+
+<Image size="contain" height="200px" src={imageSinglePlayer} />
+
+---
+
+#### Interactivity
+
+##### Whenever a user interacts with a message (using the actions), Slack will call an endpoint that we specify here:
+https://api.slack.com/apps/{APP_ID}/interactive-messages
+
+---
+
+##### We want something like this
+
+<Image size="contain" height="600px" src={imageMultiPlayer} />
+
+---
+
+<CodeSurfer>
+
+```js
+router.post('/interaction', (request, response) => {
+  const payload = JSON.parse(request.body.payload);
+
+  switch(payload.actions[0].value) {
+    case ACTION_VALUE.ADD_ROLL:
+      addRoll(payload);
+      break;
+  }
+
+  response.status(200).send('');
+});
+```
+
+```diff 6
+
+```
+
+</CodeSurfer>
+
+---
+
+<CodeSurfer>
+
+```js
+function addRoll(payload) {
+  const userId = payload.user.id;
+  const blocks = payload.message.blocks;
+
+  const sections = blocks
+    .filter(block => block.type === 'section');
+
+  const otherBlocks = blocks
+    .filter(block => block.type !== 'section');
+
+  // We parse the mode (sides and rolls) from the context block_id where we saved it
+  const { sides, rolls } = JSON.parse(otherBlocks
+    .find(block => block.type === 'context').block_id);
+
+  const rolledNumbers = roll({ sides, rolls });
+
+  // We increment the number of attempts for this user
+  const attempt = sections
+    .filter(section => JSON.parse(section.block_id).userId === userId).length + 1;
+
+  sections.push(
+    buildEntrySection({ userId, rolledNumbers, sides, attempt}),
+  );
+
+  // We group (and sort) the sections by attempts
+  sections.sort((a, b) => JSON.parse(a.block_id).attempt - JSON.parse(b.block_id).attempt);
+
+  axios.post(payload.response_url, {
+    response_type: 'in_channel',
+    replace_original: true,
+    blocks: [
+      ...sections,
+      ...otherBlocks,
+    ],
+  });
+}
+```
+
+```diff 2:4
+
+```
+
+```diff 5:9
+
+```
+
+```diff 11:15
+
+```
+
+```diff 18:23
+
+```
+
+```diff 25:26
+
+```
+
+```diff 28:35
+
+```
+
+</CodeSurfer>
+
+---
+
+### Now let's look at the core and complex code of the app
+
+---
+
+<CodeSurfer>
+
+```js subtitle="😆"
+function roll({ sides = 6, rolls = 1 } = {}) {
+  return [...Array(rolls)]
+    .map(_ => Math.floor(Math.random() * Math.floor(sides)) + 1);
+}
+```
+
+</CodeSurfer>
+
+---
+
+#### App publishing
+
+###### A long and annoying process.
+
+---
+
+### Learnings
+
+- Use the block_id as a database.
+- The publishing of the app will take you some time.
+- Slack API documentation is not the best, it's mainly based on guides instead of API reference.
+- The 3 seconds rule can be challenging when using a cloud function.
+
+---
+
+#### Stats
+
+<Image size="contain" height="200px" src={imageStats} />
+
+---
+
+#### Thank you!
+
+
+###### The repo and slides will be shared later
+
+---

@@ -1,0 +1,42 @@
+.dice {
+  position: relative;
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  border-radius: 8%;
+  box-shadow: 0 0 0 5px #22cdde;
+  margin-top: 40px;
+  margin-bottom: 80px;
+}
+
+.dice__dot {
+  position: absolute;
+  top: calc(50% - 8%);
+  left: calc(50% - 8%);
+  width: 16%;
+  height: 16%;
+  border-radius: 50%;
+  background-color: #22cdde;
+  transition: transform .8s;
+}
+
+.dice__dot--yellow {
+  background-color: #ffcd0e;
+  transition-delay: 1.5s;
+  transition-timing-function: cubic-bezier(.36,.03,.38,1.41);
+}
+.dice--animated .dice__dot--top-left {
+  transition-delay: .3s;
+  transform: translate(-175%, -175%);
+}
+.dice--animated .dice__dot--top-right {
+  transition-delay: .6s;
+  transform: translate(175%, -175%);
+}
+.dice--animated .dice__dot--bottom-right {
+  transition-delay: .9s;
+  transform: translate(175%, 175%);
+}
+.dice--animated .dice__dot--bottom-left {
+  transform: translate(-175%, 175%);
+}

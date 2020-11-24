@@ -1,4 +1,4 @@
-# MDX Deck + Code Surfer template
+# The creation of Roll Dice: an interactive Slack app
 
 This project was generated with the `npm init code-surfer-deck` command.
 
