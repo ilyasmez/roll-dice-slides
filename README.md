@@ -1,6 +1,10 @@
 # The creation of Roll Dice: an interactive Slack app
 
-This project was generated with the `npm init code-surfer-deck` command.
+The presentation is made using MDX Deck and Code Surfer 🏄‍♂️
+
+## Live
+
+[roll-dice-slides.surge.sh](https://roll-dice-slides.surge.sh)
 
 ## Development
 
@@ -10,7 +14,7 @@ To run the presentation deck in development mode:
 npm start
 ```
 
-Edit the [`deck.mdx`](deck.mdx) file to get started.
+Edit the [`deck.mdx`](deck.mdx) file.
 
 ## Exporting
 
